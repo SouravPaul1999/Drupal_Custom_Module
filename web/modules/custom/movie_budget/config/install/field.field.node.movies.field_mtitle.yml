@@ -1,0 +1,19 @@
+uuid: 02c8767a-71ce-43ca-a118-5a6d8fea4e78
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_mtitle
+    - node.type.movies
+id: node.movies.field_mtitle
+field_name: field_mtitle
+entity_type: node
+bundle: movies
+label: MTitle
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

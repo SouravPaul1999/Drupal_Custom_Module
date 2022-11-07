@@ -1,0 +1,40 @@
+<?php
+
+
+/**
+ * Implements hook_install()
+ */
+function movie_budget_install()
+{
+  //Nothing to do except be more convenient!
+
+  // creating node for movies content type
+  $node = \Drupal::entityTypeManager()->getStorage('node')->create(
+    [
+      'type' => 'movies',
+      'title' => 'Another',
+      'field_movie_budget' => 100,
+      'field_movie_released_date' => '2022-12-17',
+      'field_mtitle' => 'OMG'
+    ]
+  );
+  $node->save();
+}
+
+/**
+ * Implements hook_uninstall()
+ */
+function movie_budget_uninstall() {
+
+  // Delete all nodes of given content type.
+  $storage_handler = \Drupal::entityTypeManager()
+    ->getStorage('node');
+  $nodes = $storage_handler->loadByProperties(['type' => 'movies']);
+  $storage_handler->delete($nodes);
+
+  // Delete content type.
+  $content_type = \Drupal::entityTypeManager()
+    ->getStorage('node_type')
+    ->load('movies');
+  $content_type->delete();
+}
