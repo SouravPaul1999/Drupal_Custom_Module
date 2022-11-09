@@ -1,0 +1,23 @@
+uuid: a0012f0a-b1c3-4b66-8543-d00db6600b9a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_movie_budget
+    - node.type.movies
+id: node.movies.field_movie_budget
+field_name: field_movie_budget
+entity_type: node
+bundle: movies
+label: 'Movie Budget'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer
