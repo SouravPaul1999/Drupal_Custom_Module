@@ -6,8 +6,10 @@
  */
 function movie_budget_install()
 {
-  //Nothing to do except be more convenient!
+  // setting module weight after enabling the module
 
+  module_set_weight('movie_budget', -1);
+  
   // creating node for movies content type
   $node = \Drupal::entityTypeManager()->getStorage('node')->create(
     [

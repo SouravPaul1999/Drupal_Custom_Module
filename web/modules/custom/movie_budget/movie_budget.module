@@ -4,55 +4,63 @@ use Drupal\migrate\Plugin\migrate\process\Get;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use PhpParser\Node\Stmt\Return_;
+use Drupal\Core\Cache\Cache;
 
 /**
- * implementing hook_preprocess().
+ * implementing hook_preprocess_page().
  */
 
 function movie_budget_preprocess_page(&$variables)
+
 {
 
-  // fetching routename as a string
-  $route_name = \Drupal::routeMatch()->getRouteName();
-
-  //checking route is for node or not
-  if ($route_name == 'entity.node.canonical') {
-
-    $node = \Drupal::routeMatch()->getParameter('node');
-
-    if ($node->getType() == 'movies') {
-
-      //fetching admin config form field value
-
-      $c_budget = (int) \Drupal::config('movie_budget.adminsettings')->get('movie_budget');
-
-      // fetching node ids of a specific content type
-
-      $query = \Drupal::entityQuery('node')
-        ->condition('status', 1) //published or not
-        ->condition('type', 'movies') //content type
-        ->pager(10); //specify results to return
-      $nids = $query->execute();
 
 
+  // fetching parameter from node url
+  $node = \Drupal::routeMatch()->getParameter('node');
 
-      // fetching entities of a node using node id
-      $node =  \Drupal\node\Entity\Node::loadMultiple($nids);
+  if (isset($node)) {
 
+    //checking, is $node object of NodeInterface class & is movies contenttype of this node?
 
-      // creating an object of Drupal Messenger service
-      $messenger = \Drupal::messenger();
+    if (($node instanceof \Drupal\node\NodeInterface)) {
 
-      // fetching node field value for each node
-      foreach ($node as $nodev) {
-        $nb = $nodev->get('field_movie_budget')->value;
+      // fetching node's contenttype
 
-        // setting message on check field value 
-        if ($nb > $c_budget) {
+      $type = $variables['node']->bundle();
 
-          $messenger->addMessage('Movie is over budget');
+      //Fetching, config form budget to compare with node field budget 
+
+      $config_budget = (int) \Drupal::config('movie_budget.adminsettings')->get('movie_budget');
+
+      // fetching nodeID
+
+      $nid = $node->id();
+
+      // fetching entitie's value of the specific node by using nodeID
+
+      $node = \Drupal\node\Entity\Node::load($nid);
+
+      // checking, has node  the field named as "field_movie_budget"?
+
+      if ($node->hasField('field_movie_budget') && $type == "movies") {
+
+        // fetching node's 'field_movie_budget'-field value
+        $node_budget = $node->get('field_movie_budget')->value;
+
+        // calling Drupal messenger service
+
+        $messenger = \Drupal::messenger();
+
+        // checking, if node field budget value greater than config_movie_budget_field value
+        // then showing messages corresponding to specific node.
+
+        if ($node_budget > $config_budget) {
+
+          $messenger->addMessage('Movie is over budget', 'warning');
         } else {
-          $messenger->addMessage('Movie is under budget');
+
+          $messenger->addMessage('Movie is under budget', 'status');
         }
       }
     }

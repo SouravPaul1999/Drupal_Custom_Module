@@ -1,5 +1,5 @@
 movie_budget.admin_settings_form:  
-  path: '/admin/config/movie_budget/adminsettings'  
+  path: '/admin/config/development/movie_budget/adminsettings'  
   defaults:
     _form: '\Drupal\movie_budget\controller\MessagesForm'  
     _title: 'Movie Budget Form'  
