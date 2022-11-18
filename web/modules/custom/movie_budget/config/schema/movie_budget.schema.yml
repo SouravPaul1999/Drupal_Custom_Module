@@ -1,0 +1,16 @@
+block.settings.cb_second:
+  type: block_settings
+  label: 'second_block block'
+  mapping:
+    foo:
+      type: string
+      label: Foo
+
+# Schema for the configuration files of the Movie budget module.
+movie_budget.settings:
+  type: config_object
+  label: 'Movie budget settings'
+  mapping:
+    movie_budget:
+      type: int
+      label: 'Movie Budget'

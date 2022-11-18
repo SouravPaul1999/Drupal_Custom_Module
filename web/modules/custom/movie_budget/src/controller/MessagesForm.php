@@ -19,7 +19,7 @@ class MessagesForm extends ConfigFormBase
   protected function getEditableConfigNames()
   {
     return [
-      'movie_budget.adminsettings',
+      'movie_budget.settings',
     ];
   }
 
@@ -36,13 +36,13 @@ class MessagesForm extends ConfigFormBase
    */
   public function buildForm(array $form, FormStateInterface $form_state)
   {
-    $config = $this->config('movie_budget.adminsettings');
+    $config = $this->config('movie_budget.settings');
 
     $form['movie_budget'] = [
       '#type' => 'number',
       '#title' => $this->t('Movie Budget'),
       '#description' => $this->t('set expected movie budget'),
-      '#default_value' => $config->get('movie_budget') ?? 201,
+      '#default_value' => $config->get('movie_budget'),
       // '#default_value' => $config->get('movie_budget')['value'] ?? 201,
       '#required' => TRUE,
     ];
@@ -67,10 +67,12 @@ class MessagesForm extends ConfigFormBase
   public function submitForm(array &$form, FormStateInterface $form_state)
   {
     parent::submitForm($form, $form_state);
-
-    $this->config('movie_budget.adminsettings')
-      ->set('movie_budget', $form_state->getValue('movie_budget'))
-      ->save();
+    
+    $this->config('movie_budget.settings')
+    ->set('movie_budget', $form_state->getValue('movie_budget'))
+    ->save();
+    
+    drupal_flush_all_caches();
 
       //Invalidate cache
       \Drupal\Core\Cache\Cache::invalidateTags(array('MY_CUSTOM_UNIQUE_TAG'));

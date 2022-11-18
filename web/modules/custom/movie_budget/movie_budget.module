@@ -14,8 +14,6 @@ function movie_budget_preprocess_page(&$variables)
 
 {
 
-
-
   // fetching parameter from node url
   $node = \Drupal::routeMatch()->getParameter('node');
 
@@ -31,7 +29,7 @@ function movie_budget_preprocess_page(&$variables)
 
       //Fetching, config form budget to compare with node field budget 
 
-      $config_budget = (int) \Drupal::config('movie_budget.adminsettings')->get('movie_budget');
+      $config_budget = (int) \Drupal::config('movie_budget.settings')->get('movie_budget');
 
       // fetching nodeID
 
@@ -65,4 +63,22 @@ function movie_budget_preprocess_page(&$variables)
       }
     }
   }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function movie_budget_theme() {
+  return [
+    'my_custom_block' => [
+      'variables' => [
+        'data' => [],
+      ],
+    ],
+
+    'v_link_formatter' => [
+      'variables' => ['url' => NULL],
+      'template' => 'v-link-formatter',
+    ],
+  ];
 }
