@@ -1,0 +1,84 @@
+<?php
+
+use Drupal\migrate\Plugin\migrate\process\Get;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use PhpParser\Node\Stmt\Return_;
+use Drupal\Core\Cache\Cache;
+
+/**
+ * implementing hook_preprocess_page().
+ */
+
+function movie_budget_preprocess_page(&$variables)
+
+{
+
+  // fetching parameter from node url
+  $node = \Drupal::routeMatch()->getParameter('node');
+
+  if (isset($node)) {
+
+    //checking, is $node object of NodeInterface class & is movies contenttype of this node?
+
+    if (($node instanceof \Drupal\node\NodeInterface)) {
+
+      // fetching node's contenttype
+
+      $type = $variables['node']->bundle();
+
+      //Fetching, config form budget to compare with node field budget 
+
+      $config_budget = (int) \Drupal::config('movie_budget.settings')->get('movie_budget');
+
+      // fetching nodeID
+
+      $nid = $node->id();
+
+      // fetching entitie's value of the specific node by using nodeID
+
+      $node = \Drupal\node\Entity\Node::load($nid);
+
+      // checking, has node  the field named as "field_movie_budget"?
+
+      if ($node->hasField('field_movie_budget') && $type == "movies") {
+
+        // fetching node's 'field_movie_budget'-field value
+        $node_budget = $node->get('field_movie_budget')->value;
+
+        // calling Drupal messenger service
+
+        $messenger = \Drupal::messenger();
+
+        // checking, if node field budget value greater than config_movie_budget_field value
+        // then showing messages corresponding to specific node.
+
+        if ($node_budget > $config_budget) {
+
+          $messenger->addMessage('Movie is over budget', 'warning');
+        } else {
+
+          $messenger->addMessage('Movie is under budget', 'status');
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function movie_budget_theme() {
+  return [
+    'my_custom_block' => [
+      'variables' => [
+        'data' => [],
+      ],
+    ],
+
+    'v_link_formatter' => [
+      'variables' => ['url' => NULL],
+      'template' => 'v-link-formatter',
+    ],
+  ];
+}

@@ -1,0 +1,59 @@
+<?php
+
+
+/**
+ * Implements hook_install()
+ */
+function movie_budget_install()
+{
+  // setting module weight after enabling the module
+
+  module_set_weight('movie_budget', -1 );
+  
+  // creating node for movies content type
+  $node1 = \Drupal::entityTypeManager()->getStorage('node')->create(
+    [
+      'type' => 'movies',
+      'langcode' => 'en',
+      'uid' => '1',
+      'title' => 'OMG Movie',
+      'field_movie_budget' => 100,
+      'field_movie_released_date' => '2022-12-17',
+      'field_mtitle' => 'OMG',
+      'moderation_state' => 'published'
+    ]
+  );
+  $node1->save();
+
+  $node2 = \Drupal::entityTypeManager()->getStorage('node')->create(
+    [
+      'type' => 'movies',
+      'langcode' => 'en',
+      'uid' => '3',
+      'title' => 'YJHD Movie',
+      'field_movie_budget' => 517,
+      'field_movie_released_date' => '2011-12-19',
+      'field_mtitle' => 'YJHD',
+      'moderation_state' => 'published'
+    ]
+  );
+  $node2->save();
+}
+
+/**
+ * Implements hook_uninstall()
+ */
+function movie_budget_uninstall() {
+
+  // Delete all nodes of given content type.
+  $storage_handler = \Drupal::entityTypeManager()
+    ->getStorage('node');
+  $nodes = $storage_handler->loadByProperties(['type' => 'movies']);
+  $storage_handler->delete($nodes);
+
+  // Delete content type.
+  $content_type = \Drupal::entityTypeManager()
+    ->getStorage('node_type')
+    ->load('movies');
+  $content_type->delete();
+}
